@@ -17,6 +17,6 @@ email = gmail.generate_message do
   body "Don't check them right now!"
 end
 
-email.deliver!
+# email.deliver!
 
 gmail.logout
