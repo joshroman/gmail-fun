@@ -28,8 +28,9 @@ march_expenses.each do |email|
     # what about attachments?
   end
   gmail.deliver(new_email)
-  puts "Sent email number #{i} of #{march_expenses.count}"
   i += 1
+  puts "Sent email number #{i} of #{march_expenses.count}"
+  
 end
   
 gmail.logout
