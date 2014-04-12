@@ -1,22 +1,35 @@
-# Playing around with Ruby-Gmail gem
+# Playing around with Gmail gem
+# https://github.com/nu7hatch/gmail
 
 require 'gmail'
 require './gmail_config'
 
-gmail = Gmail.new(Gmail_Config::KOKO[:username], Gmail_Config::KOKO[:password])
+gmail = Gmail.connect(Gmail_Config::KOKO[:username], Gmail_Config::KOKO[:password])
 
 inbox = gmail.inbox
+expenses = gmail.label("Expenses")
+march_expenses = expenses.find(:before => Date.parse("2014-04-01"), :after => Date.parse("2014-03-01"))
 
 puts "Total number of emails in inbox: #{inbox.count}"
 puts "Total number of unread emails: #{inbox.count(:unread)}"
+puts "All labels: #{gmail.labels.all}"
+puts "Total number of 'Expenses' emails: #{expenses.count}"
+puts "Total number of 'Expenses' emails in March: #{march_expenses.count}"
+march_expenses.each {|email| puts "#{email.date} - #{email.subject}"}
 
-email = gmail.generate_message do
-  from "josh@kokofitclub.com"
-  to "joshroman@gmail.com"
-  subject "You have #{inbox.count} emails in your inbox."
-  body "Don't check them right now!"
+i = 0
+march_expenses.each do |email|
+  # make this a #forward method...
+  new_email = gmail.compose do
+    to "sharon@kokofitclub.com"
+    subject "Josh Expenses: #{email.subject}"
+    # is there a #message method?
+    body "#{email.body}"
+    # what about attachments?
+  end
+  gmail.deliver(new_email)
+  puts "Sent email number #{i} of #{march_expenses.count}"
+  i += 1
 end
-
-# email.deliver!
-
+  
 gmail.logout
