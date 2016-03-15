@@ -1,0 +1,3 @@
+module Gmail_Config
+  KOKO = { username: '<USERNAME>', password: '<PASSWORD>', recipient: '<EMAIL ADDRESS' } 
+end
