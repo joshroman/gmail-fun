@@ -30,6 +30,7 @@ prev_month_expenses.each do |email|
     to "#{Gmail_Config::KOKO[:recipient]}"
     subject "Josh Expenses: #{email.subject}"
     # is there a #message method?
+    content_type 'text/html; charset=UTF-8'
     body "#{email.body}"
     # what about attachments?
   end
