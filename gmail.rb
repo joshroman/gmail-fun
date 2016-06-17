@@ -25,14 +25,14 @@ prev_month_expenses.each {|email| puts "#{email.date} - #{email.subject}"}
 i = 0
 prev_month_expenses.each do |email|
 
-  # make this a #forward method...
   new_email = gmail.compose do
     to "#{Gmail_Config::KOKO[:recipient]}"
     subject "Josh Expenses: #{email.subject}"
-    # is there a #message method?
     content_type 'text/html; charset=UTF-8'
     body "#{email.body}"
-    # what about attachments?
+    email.attachments.each do |attachment|
+      add_file email.attachment
+    end
   end
 
   gmail.deliver(new_email)
