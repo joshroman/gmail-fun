@@ -13,13 +13,17 @@ gmail = Gmail.connect(Gmail_Config::KOKO[:username], Gmail_Config::KOKO[:passwor
 i = 0
 last_month = Date.today.month - 1
 
-forwardable_mail = gmail.label("Expenses").find(:before => Date.today.beginning_of_month, :after => Date.today.beginning_of_month.last_month)
+month_name = "SEPT"
+
+forwardable_mail = gmail.mailbox("Expenses").emails(gm: 'after:2016-08-30 before:2016-10-01' )
+# forwardable_mail = gmail.mailbox("Expenses").emails(:before => Date.today.beginning_of_month, :after => Date.today.beginning_of_month.last_month)
+
 
 forwardable_mail.each do |email|
 
   new_email = gmail.compose do
     to "#{Gmail_Config::KOKO[:recipient]}"
-    subject "JR Exp: #{email.subject}: #{email.date.to_s}"
+    subject "JR #{month_name} Exp: #{email.subject}: #{email.date.to_s}"
 
     # SINGLE-PART EMAILS
     if email.content_type == "text/plain"
@@ -67,8 +71,10 @@ forwardable_mail.each do |email|
   gmail.deliver(new_email)
 
   i += 1
-  puts "Sent email number #{i} of #{forwarded_mail.count}"
+  puts "Sent email number #{i} of #{forwardable_mail.count}"
 
 end
+
+puts "**** WELL DONE, SIR! ****"
 
 gmail.logout
