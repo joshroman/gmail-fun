@@ -3,8 +3,6 @@
 
 require 'gmail'
 require 'date'
-require 'active_support'
-require 'active_support/core_ext'
 require 'fileutils'
 require './gmail_config'
 
@@ -15,15 +13,18 @@ last_month = Date.today.month - 1
 
 month_name = "SEPT"
 
-forwardable_mail = gmail.mailbox("Expenses").emails(gm: 'after:2016-08-30 before:2016-10-01' )
-# forwardable_mail = gmail.mailbox("Expenses").emails(:before => Date.today.beginning_of_month, :after => Date.today.beginning_of_month.last_month)
+# "Last Month"
+forwardable_mail = gmail.mailbox("Expenses").emails(gm: "after:#{Date.today.beginning_of_month.last_month} before:#{Date.today.beginning_of_month}" )
+
+# Fixed Month
+# forwardable_mail = gmail.mailbox("Expenses").emails(gm: "after:2016-09-30 before:2016-11-01" )
 
 
 forwardable_mail.each do |email|
 
   new_email = gmail.compose do
     to "#{Gmail_Config::KOKO[:recipient]}"
-    subject "JR #{month_name} Exp: #{email.subject}: #{email.date.to_s}"
+    subject "JR #{last_month} Exp: #{email.subject}: #{email.date.to_s}"
 
     # SINGLE-PART EMAILS
     if email.content_type == "text/plain"
